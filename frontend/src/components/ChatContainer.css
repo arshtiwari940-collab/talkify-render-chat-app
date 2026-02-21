@@ -94,3 +94,13 @@
     color: var(--text-secondary);
     margin-top: 2px;
 }
+
+@media (max-width: 768px) {
+    .chat-message {
+        max-width: 95%;
+    }
+
+    .chat-messages {
+        padding: 1rem 0.5rem;
+    }
+}
