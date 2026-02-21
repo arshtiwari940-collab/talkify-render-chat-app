@@ -1,0 +1,300 @@
+.profile-page {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    background-color: var(--bg-primary);
+    min-height: 100vh;
+    padding-top: 5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Background animated gradient glow */
+.profile-page::before {
+    content: '';
+    position: absolute;
+    top: -10%;
+    left: -10%;
+    width: 50%;
+    height: 50%;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+    border-radius: 50%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.profile-page::after {
+    content: '';
+    position: absolute;
+    bottom: -10%;
+    right: -10%;
+    width: 60%;
+    height: 60%;
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
+    border-radius: 50%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.profile-container {
+    width: 100%;
+    max-width: 800px;
+    /* Wider for the premium layout */
+    padding: 1rem;
+    z-index: 1;
+}
+
+.premium-glass {
+    background: var(--bg-secondary);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 1.5rem;
+    padding: 0;
+    /* Removing padding to allow banner to hit edges */
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem 2rem;
+    position: absolute;
+    /* Float over the banner */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 10;
+}
+
+.profile-banner {
+    height: 160px;
+    background: linear-gradient(135deg, var(--accent-color) 0%, #8b5cf6 100%);
+    position: relative;
+    width: 100%;
+}
+
+.banner-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 100%);
+}
+
+.glass-btn {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    /* Important to contrast with banner */
+    transition: all 0.2s;
+}
+
+.glass-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.gradient-text {
+    background: linear-gradient(to right, #fff, rgba(255, 255, 255, 0.8));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-form {
+    padding: 0 2.5rem 2.5rem 2.5rem;
+    position: relative;
+}
+
+.avatar-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-top: -60px;
+    /* Overlap banner */
+    margin-bottom: 2.5rem;
+    position: relative;
+    z-index: 5;
+}
+
+.avatar-upload-wrapper {
+    position: relative;
+    width: 140px;
+    height: 140px;
+}
+
+.profile-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 6px solid var(--bg-secondary);
+    background-color: var(--bg-primary);
+    transition: transform 0.3s ease;
+}
+
+.shadow-glow {
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.avatar-upload-label {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    padding: 0.6rem;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    color: var(--text-primary);
+}
+
+.profile-subtitle {
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+    .info-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.glass-input-wrap {
+    background: rgba(var(--bg-primary-rgb), 0.5);
+    /* fallback */
+    background-color: var(--bg-primary);
+    border-radius: 1rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.glass-input-wrap:focus-within {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 1px var(--accent-color), 0 4px 20px rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+}
+
+.input-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+}
+
+.text-accent {
+    color: var(--accent-color);
+}
+
+.premium-input {
+    background: transparent;
+    border: none;
+    padding: 0;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    width: 100%;
+}
+
+.premium-input:focus {
+    outline: none;
+}
+
+.description-input {
+    resize: vertical;
+    min-height: 80px;
+    line-height: 1.5;
+}
+
+.premium-submit {
+    border-radius: 1rem;
+    padding: 1rem;
+    font-weight: 600;
+    font-size: 1rem;
+    letter-spacing: 0.02em;
+    box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
+    transition: all 0.3s ease;
+}
+
+.premium-submit:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 25px -5px rgba(99, 102, 241, 0.4);
+}
+
+.glass-panel {
+    background: rgba(var(--bg-primary-rgb), 0.3);
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 1.5rem;
+    margin: 0 2.5rem 2.5rem 2.5rem;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px dashed var(--border-color);
+    color: var(--text-secondary);
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.status-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+    padding: 0.25rem 0.75rem;
+    border-radius: 2rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.status-badge .dot {
+    width: 8px;
+    height: 8px;
+    background-color: #10b981;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #10b981;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.5;
+        transform: scale(1.2);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}

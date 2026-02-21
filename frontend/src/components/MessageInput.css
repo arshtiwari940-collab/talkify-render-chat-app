@@ -1,0 +1,94 @@
+.message-input-container {
+    padding: 1rem 1.5rem;
+    background-color: var(--bg-secondary);
+    border-top: 1px solid var(--border-color);
+}
+
+.input-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.input-with-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: var(--bg-primary);
+    padding: 0.5rem;
+    border-radius: 2rem;
+    border: 1px solid var(--border-color);
+}
+
+.input-with-actions:focus-within {
+    border-color: var(--accent-color);
+}
+
+.chat-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 0.5rem 1rem;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+
+.chat-input:focus {
+    outline: none;
+}
+
+.hidden-file-input {
+    display: none;
+}
+
+.send-btn {
+    background-color: var(--accent-color);
+    color: var(--text-on-accent);
+}
+
+.send-btn:hover:not(:disabled) {
+    background-color: var(--accent-hover);
+    color: var(--text-on-accent);
+}
+
+.send-btn:disabled {
+    opacity: 0.5;
+    background-color: var(--border-color);
+    color: var(--text-secondary);
+    cursor: not-allowed;
+}
+
+.media-preview {
+    margin-bottom: 1rem;
+    padding: 0 1rem;
+}
+
+.preview-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.preview-wrapper img {
+    height: 80px;
+    border-radius: 0.5rem;
+    border: 1px solid var(--border-color);
+}
+
+.remove-preview-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    padding: 0;
+}
+
+.btn-circle {
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

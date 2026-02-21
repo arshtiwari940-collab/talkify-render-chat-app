@@ -1,0 +1,93 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+:root {
+	/* Light Mode Colors */
+	--bg-primary-light: #f5f7fb;
+	--bg-secondary-light: #ffffff;
+	--text-primary-light: #1e1e2d;
+	--text-secondary-light: #6e6e80;
+	--accent-color-light: #5d5fef;
+	--accent-hover-light: #494bb3;
+	--border-color-light: #e0e0e0;
+	--message-sent-light: #5d5fef;
+	--message-received-light: #e5e5ea;
+
+	/* Dark Mode Colors */
+	--bg-primary-dark: #121212;
+	--bg-secondary-dark: #1e1e1e;
+	--text-primary-dark: #e0e0e0;
+	--text-secondary-dark: #a0a0a0;
+	--accent-color-dark: #7c7eff;
+	--accent-hover-dark: #5d5fef;
+	--border-color-dark: #333333;
+	--message-sent-dark: #7c7eff;
+	--message-received-dark: #333333;
+
+	/* Variables for dynamic theme switching */
+	--bg-primary: var(--bg-primary-light);
+	--bg-secondary: var(--bg-secondary-light);
+	--text-primary: var(--text-primary-light);
+	--text-secondary: var(--text-secondary-light);
+	--accent-color: var(--accent-color-light);
+	--accent-hover: var(--accent-hover-light);
+	--border-color: var(--border-color-light);
+	--message-sent: var(--message-sent-light);
+	--message-received: var(--message-received-light);
+	--text-on-accent: #ffffff;
+}
+
+[data-theme='dark'] {
+	--bg-primary: var(--bg-primary-dark);
+	--bg-secondary: var(--bg-secondary-dark);
+	--text-primary: var(--text-primary-dark);
+	--text-secondary: var(--text-secondary-dark);
+	--accent-color: var(--accent-color-dark);
+	--accent-hover: var(--accent-hover-dark);
+	--border-color: var(--border-color-dark);
+	--message-sent: var(--message-sent-dark);
+	--message-received: var(--message-received-dark);
+	--text-on-accent: #121212;
+}
+
+body {
+	font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+	background-color: var(--bg-primary);
+	color: var(--text-primary);
+	transition: background-color 0.3s ease, color 0.3s ease;
+	height: 100vh;
+	width: 100vw;
+	overflow: hidden;
+}
+
+input, button, textarea {
+	font-family: inherit;
+}
+
+/* Animations */
+@keyframes fadeIn {
+	from { opacity: 0; transform: translateY(10px); }
+	to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+	animation: fadeIn 0.3s ease forwards;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+	width: 6px;
+}
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+::-webkit-scrollbar-thumb {
+	background: var(--border-color);
+	border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+	background: var(--text-secondary);
+}

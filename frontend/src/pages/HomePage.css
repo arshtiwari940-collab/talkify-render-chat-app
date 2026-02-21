@@ -1,0 +1,123 @@
+.home-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: var(--bg-primary);
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    height: 64px;
+}
+
+.navbar-brand h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--accent-color);
+    margin: 0;
+}
+
+.navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.user-greeting {
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.theme-toggle {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.theme-toggle:hover {
+    background-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    background-color: var(--border-color);
+}
+
+.logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+}
+
+.chat-layout {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+.sidebar-wrapper {
+    width: 320px;
+    border-right: 1px solid var(--border-color);
+    background-color: var(--bg-secondary);
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-primary);
+}
+
+@media (max-width: 768px) {
+    .hide-sm {
+        display: none;
+    }
+
+    .navbar {
+        padding: 1rem;
+    }
+
+    .navbar-actions {
+        gap: 0.75rem;
+    }
+
+    /* On mobile, if no user is selected, Sidebar is full width and ChatWrapper is hidden */
+    /* If user IS selected, Sidebar is hidden and ChatWrapper is full width */
+    .sidebar-wrapper {
+        width: 100%;
+        transition: all 0.3s ease;
+    }
+
+    /* We will use a class .sidebar-hidden to toggle it on mobile */
+    .sidebar-wrapper.sidebar-hidden {
+        display: none;
+    }
+
+    .chat-wrapper {
+        width: 100%;
+    }
+
+    .chat-wrapper.chat-hidden {
+        display: none;
+    }
+}

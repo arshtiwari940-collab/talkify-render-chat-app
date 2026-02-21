@@ -1,0 +1,89 @@
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.header-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.header-info .avatar-wrapper {
+    width: 40px;
+    height: 40px;
+}
+
+.header-info .online-indicator {
+    width: 10px;
+    height: 10px;
+}
+
+.user-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.user-status {
+    font-size: 0.8rem;
+    color: #10b981;
+    /* Green for online */
+}
+
+.header-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.icon-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.icon-btn:hover {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+.icon-btn.active {
+    color: var(--accent-color);
+}
+
+.close-btn:hover {
+    color: #ef4444;
+    /* Red for close */
+    background-color: rgba(239, 68, 68, 0.1);
+}
+
+.back-btn-mobile {
+    display: none;
+    margin-right: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .back-btn-mobile {
+        display: flex;
+    }
+
+    .close-btn {
+        display: none;
+    }
+}
