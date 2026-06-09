@@ -1,123 +1,93 @@
-.home-container {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    background-color: var(--bg-primary);
-}
-
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2rem;
-    background-color: var(--bg-secondary);
-    border-bottom: 1px solid var(--border-color);
-    height: 64px;
-}
-
-.navbar-brand h2 {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--accent-color);
-    margin: 0;
-}
-
-.navbar-actions {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-}
-
-.user-greeting {
-    font-weight: 500;
-    color: var(--text-secondary);
-}
-
-.theme-toggle {
-    background: none;
-    border: none;
-    color: var(--text-secondary);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    padding: 0.5rem;
-    border-radius: 50%;
-    transition: background-color 0.2s, color 0.2s;
-}
-
-.theme-toggle:hover {
-    background-color: var(--border-color);
-    color: var(--text-primary);
-}
-
-.btn-secondary {
-    background-color: transparent;
-    color: var(--text-primary);
-    border: 1px solid var(--border-color);
-}
-
-.btn-secondary:hover {
-    background-color: var(--border-color);
-}
-
-.logout-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-}
-
-.chat-layout {
-    display: flex;
-    flex: 1;
-    overflow: hidden;
-}
-
-.sidebar-wrapper {
-    width: 320px;
-    border-right: 1px solid var(--border-color);
-    background-color: var(--bg-secondary);
-    display: flex;
-    flex-direction: column;
-}
-
-.chat-wrapper {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    background-color: var(--bg-primary);
-}
-
-@media (max-width: 768px) {
-    .hide-sm {
-        display: none;
-    }
-
-    .navbar {
-        padding: 1rem;
-    }
-
-    .navbar-actions {
-        gap: 0.75rem;
-    }
-
-    /* On mobile, if no user is selected, Sidebar is full width and ChatWrapper is hidden */
-    /* If user IS selected, Sidebar is hidden and ChatWrapper is full width */
-    .sidebar-wrapper {
-        width: 100%;
-        transition: all 0.3s ease;
-    }
-
-    /* We will use a class .sidebar-hidden to toggle it on mobile */
-    .sidebar-wrapper.sidebar-hidden {
-        display: none;
-    }
-
-    .chat-wrapper {
-        width: 100%;
-    }
-
-    .chat-wrapper.chat-hidden {
-        display: none;
-    }
-}
+.home-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    height: 100dvh;
+    background-color: var(--bg-primary);
+    width: 100%;
+    max-width: 100vw;
+    overflow: hidden;
+}
+
+.chat-layout {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    min-height: 0;
+    width: 100%;
+}
+
+.sidebar-wrapper {
+    width: 320px;
+    min-width: 280px;
+    max-width: 360px;
+    border-right: 1px solid var(--border-color);
+    background-color: var(--bg-secondary);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+}
+
+.chat-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-primary);
+    min-width: 0;
+    min-height: 0;
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+    .sidebar-wrapper {
+        width: 280px;
+        min-width: 260px;
+    }
+}
+
+/* Mobile — single-panel navigation */
+@media (max-width: 768px) {
+    .sidebar-wrapper {
+        width: 100%;
+        min-width: 0;
+        max-width: none;
+        border-right: none;
+        transition: opacity 0.2s ease;
+    }
+
+    .sidebar-wrapper.sidebar-hidden {
+        display: none;
+    }
+
+    .chat-wrapper {
+        width: 100%;
+    }
+
+    .chat-wrapper.chat-hidden {
+        display: none;
+    }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+    .home-container {
+        padding-bottom: env(safe-area-inset-bottom, 0);
+    }
+}
+
+/* Landscape phones — keep single panel, maximize vertical space */
+@media (max-width: 768px) and (orientation: landscape) {
+    .home-container {
+        height: 100dvh;
+    }
+}
+
+/* Large desktops — cap ultra-wide layouts */
+@media (min-width: 1440px) {
+    .home-container {
+        max-width: 1600px;
+        margin: 0 auto;
+        border-left: 1px solid var(--border-color);
+        border-right: 1px solid var(--border-color);
+    }
+}

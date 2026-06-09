@@ -1,44 +1,87 @@
 import { create } from 'zustand';
 import { io } from 'socket.io-client';
+import { SOCKET_URL } from '../lib/config';
 import { useAuthStore } from './useAuthStore';
 import { useChatStore } from './useChatStore';
-
-const BASE_URL = import.meta.env.MODE === "development" ? 'http://localhost:5000' : '/';
 
 export const useSocketStore = create((set, get) => ({
     socket: null,
     onlineUsers: [],
+    typingUsers: [],
 
     connectSocket: () => {
         const { authUser } = useAuthStore.getState();
-        if (!authUser || get().socket?.connected) return;
+        if (!authUser) return;
 
-        const socket = io(BASE_URL, {
+        const existing = get().socket;
+        if (existing?.connected) return;
+        if (existing) {
+            existing.removeAllListeners();
+            existing.disconnect();
+        }
+
+        const socket = io(SOCKET_URL, {
             query: {
                 userId: authUser._id,
             },
+            withCredentials: true,
+            transports: ['websocket', 'polling'],
         });
         socket.connect();
 
-        set({ socket: socket });
+        set({ socket: socket, typingUsers: [] });
+        useChatStore.getState().refreshChatMeta();
 
         socket.on('getOnlineUsers', (userIds) => {
             set({ onlineUsers: userIds });
         });
 
         socket.on('newMessage', (newMessage) => {
-            const { selectedUser, messages } = useChatStore.getState();
-            // Only update if the message is from the currently selected user
-            const isMessageSentFromSelectedUser = newMessage.senderId === selectedUser?._id;
-            if (!isMessageSentFromSelectedUser) return;
-            useChatStore.setState({ messages: [...messages, newMessage] });
+            const chatStore = useChatStore.getState();
+            const { selectedUser, users } = chatStore;
+            const sender = users.find((u) => u._id === newMessage.senderId) || {
+                _id: newMessage.senderId,
+                fullName: 'User',
+            };
+
+            const isActiveChat = newMessage.senderId === selectedUser?._id;
+            chatStore.recordConversationActivity(sender, newMessage, {
+                incrementUnread: !isActiveChat,
+            });
+
+            if (isActiveChat) {
+                useChatStore.setState((state) => ({
+                    messages: [...state.messages, newMessage],
+                }));
+
+                const unreadIds = [newMessage._id];
+                if (unreadIds.length) {
+                    chatStore.markMessagesAsRead(unreadIds, newMessage.senderId);
+                }
+            }
         });
 
-        // WEBRTC SIGNALING HANDLERS
+        socket.on('userTyping', ({ from }) => {
+            set((state) => ({
+                typingUsers: state.typingUsers.includes(from)
+                    ? state.typingUsers
+                    : [...state.typingUsers, from],
+            }));
+        });
+
+        socket.on('userStoppedTyping', ({ from }) => {
+            set((state) => ({
+                typingUsers: state.typingUsers.filter((id) => id !== from),
+            }));
+        });
+
+        socket.on('messagesRead', ({ messageIds }) => {
+            if (messageIds?.length) {
+                useChatStore.getState().applyReadReceipts(messageIds);
+            }
+        });
+
         socket.on('incomingCall', (data) => {
-            // Handled by webrtc store usually, or we can trigger it here
-            // For simplicity we will handle it in a separate store or component
-            // Actually we can just keep state here for incoming call
             set({ incomingCall: data });
         });
 
@@ -52,15 +95,33 @@ export const useSocketStore = create((set, get) => ({
     },
 
     disconnectSocket: () => {
-        if (get().socket?.connected) get().socket.disconnect();
+        const socket = get().socket;
+        if (socket) {
+            socket.removeAllListeners();
+            socket.disconnect();
+        }
+        set({ socket: null, onlineUsers: [], typingUsers: [] });
     },
 
-    // WebRTC State
+    emitTyping: (toUserId) => {
+        const socket = get().socket;
+        if (socket?.connected && toUserId) {
+            socket.emit('typing', { to: toUserId });
+        }
+    },
+
+    emitStopTyping: (toUserId) => {
+        const socket = get().socket;
+        if (socket?.connected && toUserId) {
+            socket.emit('stopTyping', { to: toUserId });
+        }
+    },
+
     incomingCall: null,
     callAccepted: false,
     callEnded: false,
     callerSignal: null,
 
     resetCallState: () => set({ incomingCall: null, callAccepted: false, callEnded: false, callerSignal: null }),
-    setCallAccepted: (val) => set({ callAccepted: val })
+    setCallAccepted: (val) => set({ callAccepted: val }),
 }));

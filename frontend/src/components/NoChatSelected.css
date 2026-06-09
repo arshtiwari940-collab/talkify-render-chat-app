@@ -51,3 +51,44 @@
 .bounce-animation {
     animation: bounceSlow 3s infinite ease-in-out;
 }
+
+@media (max-width: 1024px) {
+    .no-chat-content {
+        max-width: 340px;
+        padding: 0 1.5rem;
+    }
+
+    .no-chat-content h2 {
+        font-size: 1.35rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .no-chat-container {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) and (min-width: 481px) and (orientation: landscape) {
+    .no-chat-container {
+        display: flex;
+    }
+
+    .no-chat-content {
+        max-width: 280px;
+    }
+
+    .icon-wrapper {
+        width: 64px;
+        height: 64px;
+        margin-bottom: 1rem;
+    }
+
+    .no-chat-content h2 {
+        font-size: 1.2rem;
+    }
+
+    .no-chat-content p {
+        font-size: 0.9rem;
+    }
+}

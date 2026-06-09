@@ -1,13 +1,18 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useChatStore } from '../store/useChatStore';
+import { useSocketStore } from '../store/useSocketStore';
 import { X, Video, ArrowLeft } from 'lucide-react';
 import './ChatHeader.css';
 
 const ChatHeader = () => {
     const { selectedUser, setSelectedUser } = useChatStore();
+    const { onlineUsers, typingUsers } = useSocketStore();
+
+    const isOnline = onlineUsers.includes(selectedUser._id);
+    const isTyping = typingUsers.includes(selectedUser._id);
 
     const handleVideoCall = () => {
-        // Initialize the getUserMedia first via state change or dispatch event
         window.dispatchEvent(new CustomEvent('start-video-call', { detail: { id: selectedUser._id } }));
     };
 
@@ -21,14 +26,22 @@ const ChatHeader = () => {
                 >
                     <ArrowLeft size={20} />
                 </button>
-                <div className="avatar-wrapper">
-                    <img src={selectedUser.profilePic || '/avatar.png'} alt={selectedUser.fullName} className="avatar" />
-                    <span className="online-indicator" /> {/* Assuming online for now */}
-                </div>
-                <div className="user-details">
-                    <h3 className="user-name">{selectedUser.fullName}</h3>
-                    <span className="user-status">Online</span>
-                </div>
+                <Link
+                    to={`/user/${selectedUser._id}`}
+                    className="header-profile-link"
+                    title="View profile"
+                >
+                    <div className="avatar-wrapper">
+                        <img src={selectedUser.profilePic || '/avatar.png'} alt={selectedUser.fullName} className="avatar" />
+                        {isOnline && <span className="online-indicator" />}
+                    </div>
+                    <div className="user-details">
+                        <h3 className="user-name">{selectedUser.fullName}</h3>
+                        <span className={`user-status ${isTyping ? 'typing' : isOnline ? 'online' : 'offline'}`}>
+                            {isTyping ? 'Typing...' : isOnline ? 'Online' : 'Offline'}
+                        </span>
+                    </div>
+                </Link>
             </div>
 
             <div className="header-actions">

@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { useAuthStore } from '../store/useAuthStore';
 import { Link } from 'react-router-dom';
 import { Lock, User, Eye, EyeOff } from 'lucide-react';
+import { getApiErrorMessage } from '../lib/apiError';
 import './AuthPages.css';
 
 const LoginPage = () => {
     const [showPassword, setShowPassword] = useState(false);
+    const [error, setError] = useState('');
     const [formData, setFormData] = useState({
         username: '',
         password: '',
@@ -15,7 +17,12 @@ const LoginPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await login(formData);
+        setError('');
+        try {
+            await login(formData);
+        } catch (err) {
+            setError(getApiErrorMessage(err, 'Login failed'));
+        }
     };
 
     return (
@@ -26,6 +33,8 @@ const LoginPage = () => {
                     <p>Sign in to your account</p>
                 </div>
                 <form onSubmit={handleSubmit} className="auth-form">
+                    {error && <div className="auth-error">{error}</div>}
+
                     <div className="form-group">
                         <label>Username</label>
                         <div className="input-with-icon">

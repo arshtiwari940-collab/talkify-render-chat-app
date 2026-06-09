@@ -1,17 +1,18 @@
 import { create } from 'zustand';
 import axios from 'axios';
+import { API_BASE_URL } from '../lib/config';
 import { useSocketStore } from './useSocketStore';
 
-// Create an axio instance
 export const axiosInstance = axios.create({
-    baseURL: import.meta.env.MODE === "development" ? 'http://localhost:5000/api' : '/api',
-    withCredentials: true, // Send cookies with requests
+    baseURL: API_BASE_URL,
+    withCredentials: true,
 });
 
 export const useAuthStore = create((set, get) => ({
     authUser: null,
     isCheckingAuth: true,
     isLoggingIn: false,
+    isSigningUp: false,
     isUpdatingProfile: false,
 
     checkAuth: async () => {
@@ -28,6 +29,7 @@ export const useAuthStore = create((set, get) => ({
     },
 
     signup: async (data) => {
+        set({ isSigningUp: true });
         try {
             const res = await axiosInstance.post('/auth/signup', data);
             set({ authUser: res.data });
@@ -35,6 +37,8 @@ export const useAuthStore = create((set, get) => ({
         } catch (error) {
             console.error('Error signing up', error);
             throw error;
+        } finally {
+            set({ isSigningUp: false });
         }
     },
 

@@ -1,7 +1,17 @@
 import bcrypt from 'bcryptjs';
 import { db } from '../db/firebaseConfig.js';
 import generateTokenAndSetCookie from '../utils/generateToken.js';
+import { getClearAuthCookieOptions } from '../utils/cookieOptions.js';
 import cloudinary from '../utils/cloudinary.js';
+
+const formatAuthUser = (id, user) => ({
+    _id: id,
+    fullName: user.fullName,
+    username: user.username,
+    profilePic: user.profilePic,
+    description: user.description || '',
+    createdAt: user.createdAt || '',
+});
 
 export const signup = async (req, res) => {
     try {
@@ -43,15 +53,13 @@ export const signup = async (req, res) => {
         // Generate JWT token
         generateTokenAndSetCookie(newUserDoc.id, res);
 
-        res.status(201).json({
-            _id: newUserDoc.id,
-            fullName: newUserData.fullName,
-            username: newUserData.username,
-            profilePic: newUserData.profilePic,
-        });
+        res.status(201).json(formatAuthUser(newUserDoc.id, newUserData));
 
     } catch (error) {
         console.log("Error in signup controller", error.message);
+        if (error.message === 'JWT_SECRET is not configured') {
+            return res.status(500).json({ error: 'Server misconfigured: JWT_SECRET is missing' });
+        }
         res.status(500).json({ error: "Internal Server Error" });
     }
 };
@@ -79,21 +87,19 @@ export const login = async (req, res) => {
 
         generateTokenAndSetCookie(userDoc.id, res);
 
-        res.status(200).json({
-            _id: userDoc.id,
-            fullName: user.fullName,
-            username: user.username,
-            profilePic: user.profilePic,
-        });
+        res.status(200).json(formatAuthUser(userDoc.id, user));
     } catch (error) {
         console.log("Error in login controller", error.message);
+        if (error.message === 'JWT_SECRET is not configured') {
+            return res.status(500).json({ error: 'Server misconfigured: JWT_SECRET is missing' });
+        }
         res.status(500).json({ error: "Internal Server Error" });
     }
 };
 
 export const logout = (req, res) => {
     try {
-        res.cookie("jwt", "", { maxAge: 0 });
+        res.cookie('jwt', '', getClearAuthCookieOptions());
         res.status(200).json({ message: "Logged out successfully" });
     } catch (error) {
         console.log("Error in logout controller", error.message);
@@ -143,13 +149,7 @@ export const updateProfile = async (req, res) => {
         const updatedUserDoc = await userRef.get();
         const updatedUser = updatedUserDoc.data();
 
-        res.status(200).json({
-            _id: updatedUserDoc.id,
-            fullName: updatedUser.fullName,
-            username: updatedUser.username,
-            profilePic: updatedUser.profilePic,
-            description: updatedUser.description || "",
-        });
+        res.status(200).json(formatAuthUser(updatedUserDoc.id, updatedUser));
     } catch (error) {
         console.log("Error in update profile", error.message);
         res.status(500).json({ error: "Internal Server Error" });

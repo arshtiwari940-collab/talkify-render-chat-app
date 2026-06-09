@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useAuthStore } from '../store/useAuthStore';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Mail, Lock, User, Eye, EyeOff, Sparkles } from 'lucide-react';
+import { getApiErrorMessage } from '../lib/apiError';
 import './AuthPages.css';
 
 const SignUpPage = () => {
     const [showPassword, setShowPassword] = useState(false);
+    const [error, setError] = useState('');
     const [formData, setFormData] = useState({
         fullName: '',
         username: '',
@@ -17,11 +19,22 @@ const SignUpPage = () => {
     const [searchParams] = useSearchParams();
     const invitedBy = searchParams.get('invite');
 
-    const { signup, isLoggingIn } = useAuthStore();
+    const { signup, isSigningUp } = useAuthStore();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await signup(formData);
+        setError('');
+
+        if (formData.password !== formData.confirmPassword) {
+            setError("Passwords don't match");
+            return;
+        }
+
+        try {
+            await signup(formData);
+        } catch (err) {
+            setError(getApiErrorMessage(err, 'Sign up failed'));
+        }
     };
 
     return (
@@ -33,13 +46,15 @@ const SignUpPage = () => {
                 </div>
 
                 {invitedBy && (
-                    <div className="invite-banner p-3 mb-4 rounded-lg flex items-center justify-center gap-2 text-sm font-medium" style={{ backgroundColor: 'rgba(99, 102, 241, 0.1)', color: 'var(--accent-color)', border: '1px solid rgba(99, 102, 241, 0.2)' }}>
+                    <div className="invite-banner">
                         <Sparkles size={16} />
                         You were invited by @{invitedBy}!
                     </div>
                 )}
 
                 <form onSubmit={handleSubmit} className="auth-form">
+                    {error && <div className="auth-error">{error}</div>}
+
                     <div className="form-group">
                         <label>Full Name</label>
                         <div className="input-with-icon">
@@ -113,8 +128,8 @@ const SignUpPage = () => {
                         </div>
                     </div>
 
-                    <button type="submit" className="btn btn-primary btn-block" disabled={isLoggingIn}>
-                        {isLoggingIn ? 'Creating account...' : 'Sign Up'}
+                    <button type="submit" className="btn btn-primary btn-block" disabled={isSigningUp}>
+                        {isSigningUp ? 'Creating account...' : 'Sign Up'}
                     </button>
 
                     <p className="auth-footer">

@@ -4,6 +4,7 @@ import HomePage from './pages/HomePage';
 import SignUpPage from './pages/SignUpPage';
 import LoginPage from './pages/LoginPage';
 import ProfilePage from './pages/ProfilePage';
+import UserProfilePage from './pages/UserProfilePage';
 import { useThemeStore } from './store/useThemeStore';
 import { useAuthStore } from './store/useAuthStore';
 import { useEffect } from 'react';
@@ -19,7 +20,7 @@ const App = () => {
 
   if (isCheckingAuth && !authUser) {
     return (
-      <div className="flex items-center justify-center h-screen" data-theme={theme}>
+      <div className="app-loading" data-theme={theme}>
         <div>Loading...</div>
       </div>
     );
@@ -33,6 +34,7 @@ const App = () => {
           <Route path='/signup' element={!authUser ? <SignUpPage /> : <Navigate to="/" />} />
           <Route path='/login' element={!authUser ? <LoginPage /> : <Navigate to="/" />} />
           <Route path='/profile' element={authUser ? <ProfilePage /> : <Navigate to="/login" />} />
+          <Route path='/user/:userId' element={authUser ? <UserProfilePage /> : <Navigate to="/login" />} />
         </Routes>
       </BrowserRouter>
     </div>

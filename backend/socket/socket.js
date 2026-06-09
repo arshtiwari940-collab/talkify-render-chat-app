@@ -1,13 +1,15 @@
 import { Server } from "socket.io";
 import http from "http";
 import express from "express";
+import { corsOriginCallback } from "../utils/cors.js";
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: ["http://localhost:5173"],
+        origin: corsOriginCallback,
         methods: ["GET", "POST"],
+        credentials: true,
     },
 });
 
@@ -21,7 +23,7 @@ io.on("connection", (socket) => {
     console.log("a user connected", socket.id);
 
     const userId = socket.handshake.query.userId;
-    if (userId != "undefined") userSocketMap[userId] = socket.id;
+    if (userId && userId !== "undefined") userSocketMap[userId] = socket.id;
 
     // io.emit() is used to send events to all the connected clients
     io.emit("getOnlineUsers", Object.keys(userSocketMap));
@@ -45,6 +47,30 @@ io.on("connection", (socket) => {
         const receiverSocketId = getReceiverSocketId(data.to);
         if (receiverSocketId) {
             io.to(receiverSocketId).emit("callEnded");
+        }
+    });
+
+    socket.on("typing", (data) => {
+        const receiverSocketId = getReceiverSocketId(data.to);
+        if (receiverSocketId) {
+            io.to(receiverSocketId).emit("userTyping", { from: userId });
+        }
+    });
+
+    socket.on("stopTyping", (data) => {
+        const receiverSocketId = getReceiverSocketId(data.to);
+        if (receiverSocketId) {
+            io.to(receiverSocketId).emit("userStoppedTyping", { from: userId });
+        }
+    });
+
+    socket.on("markMessagesRead", (data) => {
+        const senderSocketId = getReceiverSocketId(data.fromUserId);
+        if (senderSocketId) {
+            io.to(senderSocketId).emit("messagesRead", {
+                messageIds: data.messageIds,
+                readBy: userId,
+            });
         }
     });
 
