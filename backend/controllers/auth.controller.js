@@ -3,6 +3,7 @@ import { db } from '../db/firebaseConfig.js';
 import generateTokenAndSetCookie from '../utils/generateToken.js';
 import { getClearAuthCookieOptions } from '../utils/cookieOptions.js';
 import cloudinary from '../utils/cloudinary.js';
+import { io } from '../socket/socket.js';
 
 const formatAuthUser = (id, user) => ({
     _id: id,
@@ -123,15 +124,28 @@ export const updateProfile = async (req, res) => {
 
         if (!db) return res.status(500).json({ error: "Firestore not initialized." });
 
+        // Validate Cloudinary config before trying to upload
+        const { CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET } = process.env;
+        if (req.file && (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_API_KEY || !CLOUDINARY_API_SECRET)) {
+            return res.status(500).json({ error: "Image upload is not configured. Please set Cloudinary credentials in .env" });
+        }
+
         let profilePicUrl = req.user.profilePic;
 
         if (req.file) {
             const b64 = Buffer.from(req.file.buffer).toString("base64");
             let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
 
-            const cldRes = await cloudinary.uploader.upload(dataURI, {
-                resource_type: "auto",
-            });
+            let cldRes;
+            try {
+                cldRes = await cloudinary.uploader.upload(dataURI, {
+                    folder: 'talkify/avatars',
+                    resource_type: "auto",
+                });
+            } catch (cloudErr) {
+                console.error("Cloudinary upload error:", cloudErr.message || cloudErr);
+                return res.status(500).json({ error: "Failed to upload image. Check your Cloudinary credentials in .env" });
+            }
 
             profilePicUrl = cldRes.secure_url;
         }
@@ -149,9 +163,21 @@ export const updateProfile = async (req, res) => {
         const updatedUserDoc = await userRef.get();
         const updatedUser = updatedUserDoc.data();
 
-        res.status(200).json(formatAuthUser(updatedUserDoc.id, updatedUser));
+        const responseUser = formatAuthUser(updatedUserDoc.id, updatedUser);
+
+        // Broadcast profile update to all connected users so they see the new pic in real time
+        if (updateData.profilePic || updateData.description !== undefined) {
+            io.emit('userProfileUpdated', {
+                userId,
+                profilePic: responseUser.profilePic,
+                fullName: responseUser.fullName,
+                description: responseUser.description,
+            });
+        }
+
+        res.status(200).json(responseUser);
     } catch (error) {
-        console.log("Error in update profile", error.message);
+        console.error("Error in update profile:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
 };

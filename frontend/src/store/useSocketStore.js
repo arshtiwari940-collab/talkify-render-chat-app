@@ -81,6 +81,20 @@ export const useSocketStore = create((set, get) => ({
             }
         });
 
+        socket.on('userProfileUpdated', ({ userId, profilePic, fullName, description }) => {
+            // Update the users list so sidebar/chat header shows new profile pic immediately
+            useChatStore.setState((state) => ({
+                users: state.users.map((u) =>
+                    u._id === userId ? { ...u, profilePic, fullName, description } : u
+                ),
+                // Also update selectedUser if it's the one who changed their profile
+                selectedUser:
+                    state.selectedUser?._id === userId
+                        ? { ...state.selectedUser, profilePic, fullName, description }
+                        : state.selectedUser,
+            }));
+        });
+
         socket.on('incomingCall', (data) => {
             set({ incomingCall: data });
         });
