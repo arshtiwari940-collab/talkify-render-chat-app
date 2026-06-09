@@ -11,16 +11,16 @@ services:
       - key: PORT
         value: 10000
       - key: JWT_SECRET
-        sync: false          # Set this manually in Render dashboard
+        sync: false          
       - key: CLIENT_URL
-        sync: false          # Your Vercel frontend URL e.g. https://talkify.vercel.app
+        sync: false          
       - key: ALLOW_VERCEL_PREVIEWS
         value: "true"
       - key: CLOUDINARY_CLOUD_NAME
-        sync: false          # Set in Render dashboard
+        sync: false          
       - key: CLOUDINARY_API_KEY
-        sync: false          # Set in Render dashboard
+        sync: false          
       - key: CLOUDINARY_API_SECRET
-        sync: false          # Set in Render dashboard
+        sync: false         
       - key: FIREBASE_SERVICE_ACCOUNT_JSON
-        sync: false          # Paste full serviceAccountKey.json content as one line
+        sync: false         
